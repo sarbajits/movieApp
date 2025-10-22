@@ -53,7 +53,7 @@ public class MovieController {
         return movieService.deleteMovieById(id);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all-old")
     public List<MovieDto> getALlMovies() {
         return movieService.getAllMovies();
     }
@@ -66,7 +66,7 @@ public class MovieController {
         return ResponseEntity.ok(movieService.getAllMoviesWithPagination(pageNumber,pageSize));
     }
 
-    @GetMapping("/allByPageSort")
+    @GetMapping("/all")
     public ResponseEntity<MoviePageResponse> getALlMoviesWithPaginationAndSorting(
             @RequestParam(defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
             @RequestParam(defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
