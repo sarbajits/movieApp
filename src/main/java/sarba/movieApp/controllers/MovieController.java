@@ -9,8 +9,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sarba.movieApp.dto.MailBody;
 import sarba.movieApp.dto.MovieDto;
 import sarba.movieApp.dto.MoviePageResponse;
+import sarba.movieApp.service.EmailService;
 import sarba.movieApp.service.MovieService;
 import sarba.movieApp.utils.AppConstants;
 
@@ -24,10 +26,19 @@ public class MovieController {
     @Autowired
     private MovieService movieService;
 
+    @Autowired
+    private EmailService emailService;
+
     @GetMapping("/debug")
     public String debugAuth(Authentication auth) {
         return auth.getAuthorities().toString();
     }
+
+    @GetMapping("/mail")
+    public void testMail(@RequestBody MailBody mailBody){
+        emailService.sendSimpleMail(mailBody);
+    }
+
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/add")
@@ -38,6 +49,7 @@ public class MovieController {
         return new ResponseEntity<>(movieService.addMovie(movieDto, file), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/edit")
     public ResponseEntity<MovieDto> editMovie(@RequestPart MultipartFile file, @RequestPart String movieDtoObj) throws IOException {
 
