@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sarba.movieApp.dto.MovieDto;
@@ -22,6 +24,12 @@ public class MovieController {
     @Autowired
     private MovieService movieService;
 
+    @GetMapping("/debug")
+    public String debugAuth(Authentication auth) {
+        return auth.getAuthorities().toString();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<MovieDto> addMovie(@RequestPart MultipartFile file, @RequestPart String movieDtoObj) throws IOException {
 
