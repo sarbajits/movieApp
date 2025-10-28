@@ -13,7 +13,9 @@ import sarba.movieApp.auth.repositories.UserRepository;
 import sarba.movieApp.auth.utils.ChangePassword;
 import sarba.movieApp.dto.MailBody;
 import sarba.movieApp.service.EmailService;
+import sarba.movieApp.utils.EmailTemplateUtils;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
@@ -43,81 +45,30 @@ public class ForgotPasswordController {
         int otp = otpGenerator();
         String companyName = "Sarba Movie";
         String supportEmail = "contact@sarba.com";
+        String resetLink = "[Link to your app's reset page, if applicable]"; // Define the link
 
-// --- 1. Define the OTP Display Area (Making it stand out) ---
-        String otpDisplay = String.format("""
-                <p style="font-size: 28px; font-weight: bold; color: #0047AB; margin: 20px 0;">
-                    %d
-                </p>
-                """, otp);
+        String htmlBody;
+        try {
+            // --- 1. Generate the HTML Body using the template and utility ---
+            htmlBody = EmailTemplateUtils.getPasswordResetHtml(otp, companyName, supportEmail, resetLink);
+        } catch (IOException e) {
+            // Log the error and handle the failure (e.g., return an Internal Server Error)
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Failed to load email template.");
+        }
 
-// --- 2. Construct the Full HTML Body ---
-        String htmlBody = String.format("""
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Password Reset OTP</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333333; }
-                        .container { width: 100%%; max-width: 600px; margin: 0 auto; border: 1px solid #dddddd; padding: 20px; border-radius: 8px; }
-                        .header { background-color: #f4f4f4; padding: 10px 20px; border-radius: 8px 8px 0 0; text-align: center; }
-                        .otp-box { text-align: center; padding: 20px; border: 1px dashed #cccccc; margin: 20px 0; }
-                        .footer { font-size: 12px; color: #aaaaaa; text-align: center; margin-top: 20px; }
-                        .button { display: inline-block; background-color: #007bff; color: white !important; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        <div class="header">
-                            <h2 style="color: #333333;">%s</h2>
-                        </div>
-                
-                        <p>Dear Customer,</p>
-                
-                        <p>We have received a request to verify your account for a password reset.</p>
-                
-                        <p>For security, please use the following **One-Time Password (OTP)** immediately:</p>
-                
-                        <div class="otp-box">
-                            %s
-                        </div>
-                
-                        <p>This code will expire in **10 minutes**. Do not share this code with anyone.</p>
-                
-                        <p style="text-align: center; margin: 30px 0;">
-                            <a href="[Link to your app's reset page, if applicable]" class="button">
-                                Continue to Reset Password
-                            </a>
-                        </p>
-                
-                        <p>If you did not initiate this request, please disregard this email or contact us immediately at <a href="mailto:%s">%s</a>.</p>
-                
-                        <p>Best regards,</p>
-                        <p>The %s Team</p>
-                
-                        <div class="footer">
-                            This is an automated message. Please do not reply to this email.
-                        </div>
-                    </div>
-                </body>
-                </html>
-                """, companyName, otpDisplay, supportEmail, supportEmail, companyName);
-
-
-// --- 3. Build the Final MailBody Object ---
+        // --- 2. Build the Final MailBody Object ---
         MailBody mailBody = MailBody.builder()
                 .to(email)
                 .subject("Your One-Time Password (OTP) for Password Reset")
-                // Plain text fallback for very old email clients
-                .text("Your OTP is: " + otp + ". Valid for 10 minutes.")
-                .htmlText(htmlBody) // <-- Set the HTML content here
+                .text("Your OTP is: " + otp + ". Valid for 10 minutes.") // Plain text fallback
+                .htmlText(htmlBody) // <-- Use the generated HTML here
                 .build();
 
         ForgotPassword fp = ForgotPassword.builder()
                 .otp(otp)
-                .expirationTime(new Date(System.currentTimeMillis() + 60 * 100000))
-//                .user(user)
+                // Note: 60 * 100000 milliseconds is 100 minutes. Adjust for 10 minutes (60 * 10 * 1000)
+                .expirationTime(new Date(System.currentTimeMillis() + 60 * 10 * 1000))
                 .email(email)
                 .isValidated(false)
                 .build();
@@ -151,11 +102,12 @@ public class ForgotPasswordController {
     }
 
 
-    @PostMapping("/changePassword/{email}")
+    @PostMapping("/changePassword/{email}/{otp}")
     public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePassword changePassword,
-                                                        @PathVariable String email) {
+                                                        @PathVariable String email,@PathVariable Integer otp) {
 
-        ForgotPassword fp=forgotPasswordRepository.findByEmail(email);
+        ForgotPassword fp=forgotPasswordRepository.findByOtpAndEmail(otp,email)
+                .orElseThrow(() -> new RuntimeException("Invalid OTP for email: " + email));
 
         System.out.println("email -------------------->"+fp.getEmail());
         System.out.println("validated -------------------->"+fp.isValidated());
