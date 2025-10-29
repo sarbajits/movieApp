@@ -3,6 +3,7 @@ package sarba.movieApp.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -58,5 +59,22 @@ public class EmailService {
             // Optionally throw a custom runtime exception here
             throw new RuntimeException("Failed to send email.", e);
         }
+    }
+
+    public void sendPdfEmail(String to, String subject, String body,String pdfName, byte[] pdfBytes)
+            throws MessagingException {
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(body);
+
+        // Attach the PDF
+        helper.addAttachment(pdfName, new ByteArrayResource(pdfBytes));
+
+        javaMailSender.send(message);
+        System.out.println("Email sent to " + to);
     }
 }

@@ -45,6 +45,6 @@ public class ResetPasswordController {
         String convertedNewPassword = passwordEncoder.encode(resetPassword.newPassword());
         userRepository.updatePassword(email, convertedNewPassword);
 
-        return ResponseEntity.ok("Password has been changed!");
+        return ResponseEntity.ok("Password had been reset!");
     }
 }
