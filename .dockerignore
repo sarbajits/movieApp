@@ -1,0 +1,9 @@
+build/
+.mvn/
+.git
+.gitignore
+*.log
+.vscode/
+node_modules/
+.idea/
+.DS_Store
