@@ -67,7 +67,7 @@ A production-ready Spring Boot backend for managing movie data, file handling, a
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/sarbajits/movie-app.git](https://github.com/sarbajits/movie-app.git)
+    git clone https://github.com/sarbajits/movie-app.git
     ```
 2.  **Configure Database:** Ensure MySQL is running or update `app.prop` to use H2.
 3.  **Build and Run:**
