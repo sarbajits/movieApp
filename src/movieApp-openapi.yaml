@@ -1,0 +1,594 @@
+openapi: "3.1.0"
+info:
+  title: "movieApp API"
+  description: "movieApp API"
+  version: "1.0.0"
+servers:
+  - url: "https://movieApp"
+paths:
+  /api/v1/movie/add:
+    post:
+      summary: "POST api/v1/movie/add"
+      operationId: "addMovie"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - "file"
+                - "movieDtoObj"
+              properties:
+                file:
+                  type: "string"
+                  format: "binary"
+                movieDtoObj:
+                  type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MovieDto"
+  /api/v1/movie/edit:
+    post:
+      summary: "POST api/v1/movie/edit"
+      operationId: "editMovie"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - "file"
+                - "movieDtoObj"
+              properties:
+                file:
+                  type: "string"
+                  format: "binary"
+                movieDtoObj:
+                  type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MovieDto"
+  /api/v1/movie/debug:
+    get:
+      summary: "GET api/v1/movie/debug"
+      operationId: "debugAuth"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /api/v1/movie/mail:
+    get:
+      summary: "GET api/v1/movie/mail"
+      operationId: "testMail"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MailBody"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+  /api/v1/movie/{id}:
+    get:
+      summary: "GET api/v1/movie/{id}"
+      operationId: "getMovieById"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MovieDto"
+  /api/v1/movie/delete/{id}:
+    get:
+      summary: "GET api/v1/movie/delete/{id}"
+      operationId: "deleteMovieById"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "boolean"
+  /api/v1/movie/all-old:
+    get:
+      summary: "GET api/v1/movie/all-old"
+      operationId: "getALlMovies"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/MovieDto"
+  /api/v1/movie/allByPage:
+    get:
+      summary: "GET api/v1/movie/allByPage"
+      operationId: "getALlMoviesWithPagination"
+      parameters:
+        - name: "pageNumber"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "1"
+        - name: "pageSize"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "3"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MoviePageResponse"
+  /api/v1/movie/all:
+    get:
+      summary: "GET api/v1/movie/all"
+      operationId: "getALlMoviesWithPaginationAndSorting"
+      parameters:
+        - name: "pageNumber"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "1"
+        - name: "pageSize"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "3"
+        - name: "sortBy"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            default: "movieId"
+        - name: "sortOrder"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            default: "asc"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MoviePageResponse"
+  /api/v1/movie/pdf:
+    get:
+      summary: "GET api/v1/movie/pdf"
+      operationId: "generateMoviesPdf"
+      parameters:
+        - name: "pageNumber"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "1"
+        - name: "pageSize"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "3"
+        - name: "sortBy"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            default: "movieId"
+        - name: "sortOrder"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            default: "asc"
+        - name: "email"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/pdf:
+              schema:
+                type: "array"
+                items:
+                  type: "string"
+                  format: "byte"
+  /forgotPassword/verifyMail/{email}:
+    post:
+      summary: "POST forgotPassword/verifyMail/{email}"
+      operationId: "verifyEmail"
+      parameters:
+        - name: "email"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /forgotPassword/verifyOtp/{email}/{otp}:
+    post:
+      summary: "POST forgotPassword/verifyOtp/{email}/{otp}"
+      operationId: "verifyOtp"
+      parameters:
+        - name: "email"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "otp"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /forgotPassword/changePassword/{email}/{otp}:
+    post:
+      summary: "POST forgotPassword/changePassword/{email}/{otp}"
+      operationId: "changePasswordHandler"
+      parameters:
+        - name: "email"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "otp"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePassword"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /pdf/send/{email}/{text}:
+    get:
+      summary: "GET pdf/send/{email}/{text}"
+      operationId: "sendPdf"
+      parameters:
+        - name: "email"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "text"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  type: "string"
+                  format: "byte"
+  /api/v1/auth/register:
+    post:
+      summary: "POST api/v1/auth/register"
+      operationId: "register"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/auth/login:
+    post:
+      summary: "POST api/v1/auth/login"
+      operationId: "login"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/auth/refresh:
+    post:
+      summary: "POST api/v1/auth/refresh"
+      operationId: "refreshToken"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshTokenRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /file/upload:
+    post:
+      summary: "POST file/upload"
+      operationId: "uploadFile"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - "file"
+              properties:
+                file:
+                  type: "string"
+                  format: "binary"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /file/{fileName}:
+    get:
+      summary: "GET file/{fileName}"
+      operationId: "serveFile"
+      parameters:
+        - name: "fileName"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+  /resetPassword/{email}:
+    post:
+      summary: "POST resetPassword/{email}"
+      operationId: "resetPasswordHandler"
+      parameters:
+        - name: "email"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPassword"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /:
+    get:
+      summary: "GET "
+      operationId: "hello"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+components:
+  schemas:
+    MovieDto:
+      type: "object"
+      properties:
+        movieId:
+          type: "integer"
+          format: "int32"
+          nullable: true
+        title:
+          type: "string"
+          nullable: true
+        director:
+          type: "string"
+          nullable: true
+        studio:
+          type: "string"
+          nullable: true
+        producer:
+          type: "string"
+          nullable: true
+        movieCast:
+          type: "array"
+          nullable: true
+          items:
+            type: "string"
+          uniqueItems: true
+        releaseYear:
+          type: "integer"
+          format: "int32"
+          nullable: true
+        posterUrl:
+          type: "string"
+          nullable: true
+    MailBody:
+      type: "object"
+      properties:
+        to:
+          type: "string"
+          nullable: true
+        subject:
+          type: "string"
+          nullable: true
+        text:
+          type: "string"
+          nullable: true
+        htmlText:
+          type: "string"
+          nullable: true
+    MoviePageResponse:
+      type: "object"
+      properties:
+        MovieDtos:
+          type: "array"
+          nullable: true
+          items:
+            $ref: "#/components/schemas/MovieDto"
+        pageNumber:
+          type: "integer"
+          format: "int32"
+          nullable: true
+        pageSize:
+          type: "integer"
+          format: "int32"
+          nullable: true
+        totalElements:
+          type: "integer"
+          format: "int64"
+          nullable: true
+        totalPages:
+          type: "integer"
+          format: "int32"
+          nullable: true
+        isLast:
+          type: "boolean"
+          nullable: true
+    ChangePassword:
+      type: "object"
+      properties:
+        password:
+          type: "string"
+          nullable: true
+        repeatPassword:
+          type: "string"
+          nullable: true
+    RegisterRequest:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          nullable: true
+        email:
+          type: "string"
+          nullable: true
+        username:
+          type: "string"
+          nullable: true
+        password:
+          type: "string"
+          nullable: true
+    AuthResponse:
+      type: "object"
+      properties:
+        accessToken:
+          type: "string"
+          nullable: true
+        refreshToken:
+          type: "string"
+          nullable: true
+        name:
+          type: "string"
+          nullable: true
+        email:
+          type: "string"
+          nullable: true
+    LoginRequest:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          nullable: true
+        password:
+          type: "string"
+          nullable: true
+    RefreshTokenRequest:
+      type: "object"
+      properties:
+        refreshToken:
+          type: "string"
+          nullable: true
+    ResetPassword:
+      type: "object"
+      properties:
+        oldPassword:
+          type: "string"
+          nullable: true
+        newPassword:
+          type: "string"
+          nullable: true
