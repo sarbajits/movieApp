@@ -1,92 +1,120 @@
-# MovieApp
+# 🎬 MovieApp Service
 
-Lightweight Spring Boot service to manage movies, files and authentication with email/OTP support. Production-ready features include JWT auth, file upload/serve, PDF generation and Docker setup.
+A production-ready Spring Boot backend for managing movie data, file handling, and secure authentication. This service features JWT security, PDF generation, dynamic email templating, and full Docker support.
 
-## Quick links
-- Run entry: [`sarba.movieApp.MovieAppApplication`](src/main/java/sarba/movieApp/MovieAppApplication.java) — [src/main/java/sarba/movieApp/MovieAppApplication.java](src/main/java/sarba/movieApp/MovieAppApplication.java)  
-- Main REST controllers:
-  - [`sarba.movieApp.controllers.MovieController`](src/main/java/sarba/movieApp/controllers/MovieController.java) — [src/main/java/sarba/movieApp/controllers/MovieController.java](src/main/java/sarba/movieApp/controllers/MovieController.java)  
-  - [`sarba.movieApp.controllers.FileController`](src/main/java/sarba/movieApp/controllers/FileController.java) — [src/main/java/sarba/movieApp/controllers/FileController.java](src/main/java/sarba/movieApp/controllers/FileController.java)  
-  - [`sarba.movieApp.controllers.ForgotPasswordController`](src/main/java/sarba/movieApp/controllers/ForgotPasswordController.java) — [src/main/java/sarba/movieApp/controllers/ForgotPasswordController.java](src/main/java/sarba/movieApp/controllers/ForgotPasswordController.java)  
-  - [`sarba.movieApp.controllers.PdfController`](src/main/java/sarba/movieApp/controllers/PdfController.java) — [src/main/java/sarba/movieApp/controllers/PdfController.java](src/main/java/sarba/movieApp/controllers/PdfController.java)  
-- Auth & security:
-  - [`sarba.movieApp.auth.config.SecurityConfiguration`](src/main/java/sarba/movieApp/auth/config/SecurityConfiguration.java) — [src/main/java/sarba/movieApp/auth/config/SecurityConfiguration.java](src/main/java/sarba/movieApp/auth/config/SecurityConfiguration.java)  
-  - [`sarba.movieApp.auth.services.JwtService`](src/main/java/sarba/movieApp/auth/services/JwtService.java) — [src/main/java/sarba/movieApp/auth/services/JwtService.java](src/main/java/sarba/movieApp/auth/services/JwtService.java)  
-- Services & utils:
-  - [`sarba.movieApp.service.MovieServiceImpl`](src/main/java/sarba/movieApp/service/MovieServiceImpl.java) — [src/main/java/sarba/movieApp/service/MovieServiceImpl.java](src/main/java/sarba/movieApp/service/MovieServiceImpl.java)  
-  - [`sarba.movieApp.service.FileServiceImpl`](src/main/java/sarba/movieApp/service/FileServiceImpl.java) — [src/main/java/sarba/movieApp/service/FileServiceImpl.java](src/main/java/sarba/movieApp/service/FileServiceImpl.java)  
-  - [`sarba.movieApp.service.EmailService`](src/main/java/sarba/movieApp/service/EmailService.java) — [src/main/java/sarba/movieApp/service/EmailService.java](src/main/java/sarba/movieApp/service/EmailService.java)  
-  - [`sarba.movieApp.utils.EmailTemplateUtils`](src/main/java/sarba/movieApp/utils/EmailTemplateUtils.java) — [src/main/java/sarba/movieApp/utils/EmailTemplateUtils.java](src/main/java/sarba/movieApp/utils/EmailTemplateUtils.java)  
-- Templates & config:
-  - Email template: [src/main/resources/templates/password-reset-otp-template.html](src/main/resources/templates/password-reset-otp-template.html)  
-  - App properties (local): [src/main/resources/app.prop](src/main/resources/app.prop)  
-  - Docker: [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml), [.env](.env)
+![Java](https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=java)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-green?style=flat-square&logo=spring)
+![Docker](https://img.shields.io/badge/Docker-Enabled-blue?style=flat-square&logo=docker)
+![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square)
 
-## Features
-- CRUD and paginated/sorted listing for movies (poster upload).
-- File upload and serve endpoints.
-- OTP-based forgot-password flow with HTML email template.
-- JWT authentication and refresh-token flow.
-- PDF generation (watermark, encryption) and optional email send.
-- Docker Compose for local MySQL + app + phpMyAdmin.
+---
 
-## Prerequisites
+## 🚀 Features
+
+### 🔐 Authentication & Security
+- **JWT Authentication:** Stateless security using Access and Refresh tokens.
+- **Forgot Password Flow:** OTP-based password reset with HTML email templates.
+- **Role-Based Access:** Secure endpoints protected by Spring Security.
+
+### 🎥 Movie Management
+- **CRUD Operations:** Full management of movie data.
+- **Advanced Querying:** Pagination and sorting support for listing movies.
+- **Media Support:** Movie poster upload and retrieval.
+
+### 📂 File & Document Handling
+- **File System Storage:** Upload and serve images/files locally.
+- **PDF Generation:** Generate encrypted, watermarked PDFs dynamically.
+
+### ⚙️ DevOps & Utils
+- **Dockerized:** Includes `Dockerfile` and `docker-compose` for easy deployment.
+- **Email Service:** Thymeleaf-based HTML email templates.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Core:** Java 21, Spring Boot 3
+- **Database:** MySQL (Production), H2 (Testing)
+- **Security:** Spring Security, JWT (JJWT)
+- **Build Tool:** Maven
+- **Containerization:** Docker, Docker Compose
+
+---
+
+## ⚙️ Configuration & Environment Variables
+
+**⚠️ Security Warning:** This project uses sensitive configuration. Create a `.env` file in the root directory using the keys below. **Never commit your `.env` file to Git.**
+
+| Variable Key | Description | Example Value |
+| :--- | :--- | :--- |
+| `SPRING_MAIL_USERNAME` | SMTP Email Address | `admin@gmail.com` |
+| `SPRING_MAIL_PASSWORD` | SMTP App Password | `xxxx-xxxx-xxxx-xxxx` |
+| `MYSQL_DB_USERNAME` | Database User | `root` |
+| `MYSQL_DB_PASSWORD` | Database Password | `password` |
+| `JWT_SECRET` | Secret key for signing tokens | `SuperSecretKey123...` |
+| `PROJECT_FILE_LOCATION` | Local folder path for uploads | `user/photos/` |
+
+---
+
+## 🏃‍♂️ Getting Started
+
+### Prerequisites
 - Java 21 JDK
-- Maven (or use the included wrapper: `./mvnw` / `mvnw.cmd`)
-- Docker & Docker Compose (if running containers)
+- Maven
+- Docker (Optional, for containerized run)
 
-## Build & Run (local)
-1. Build:
-   - Linux / macOS:
-     - ./mvnw clean package -DskipTests
-   - Windows (PowerShell/CMD):
-     - mvnw.cmd clean package -DskipTests
-2. Run JAR:
-   - java -jar target/movieApp-0.0.1-SNAPSHOT.jar
+### Option 1: Run Locally (Manual)
 
-## Run with Docker
-1. Copy or update credentials in `.env` and ensure `SPRING_MAIL_*` set.
-   - [.env](.env)
-2. Build and run:
-   - docker build -t movieapp:latest .
-   - docker-compose up --build -d
-3. App URL: http://localhost:8080/
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/your-username/movie-app.git](https://github.com/your-username/movie-app.git)
+    ```
+2.  **Configure Database:** Ensure MySQL is running or update `app.prop` to use H2.
+3.  **Build and Run:**
+    ```bash
+    # Linux / Mac
+    ./mvnw clean package -DskipTests
+    java -jar target/movieApp-0.0.1-SNAPSHOT.jar
 
-## Environment & config
-- Local resource file location: `project.fileLocation` (see [src/main/resources/app.prop](src/main/resources/app.prop)). The app reads this property via `@Value("${project.fileLocation}")` in services such as [`sarba.movieApp.service.MovieServiceImpl`](src/main/java/sarba/movieApp/service/MovieServiceImpl.java).
-- SMTP config: set `SPRING_MAIL_USERNAME` and `SPRING_MAIL_PASSWORD` in env or `.env`. The JavaMail usage is in [`sarba.movieApp.service.EmailService`](src/main/java/sarba/movieApp/service/EmailService.java).
+    # Windows
+    mvnw.cmd clean package -DskipTests
+    java -jar target/movieApp-0.0.1-SNAPSHOT.jar
+    ```
 
-## Useful endpoints
-- Health / root: GET /
-- Movies
-  - POST /api/v1/movie/add (multipart: file + movie json) — see [`sarba.movieApp.controllers.MovieController`](src/main/java/sarba/movieApp/controllers/MovieController.java)
-  - GET /api/v1/movie/{id}
-  - GET /api/v1/movie/all (pagination & sorting)
-  - GET /api/v1/movie/pdf (generate PDF)
-- File
-  - POST /file/upload
-  - GET /file/{fileName} — serves uploaded image (see [`sarba.movieApp.controllers.FileController`](src/main/java/sarba/movieApp/controllers/FileController.java))
-- Auth / Password flows
-  - /api/v1/auth/* (register/login/refresh) — see [`sarba.movieApp.controllers.AuthController`](src/main/java/sarba/movieApp/controllers/AuthController.java)
-  - /forgotPassword/* (OTP flow) — see [`sarba.movieApp.controllers.ForgotPasswordController`](src/main/java/sarba/movieApp/controllers/ForgotPasswordController.java)
+### Option 2: Run with Docker (Recommended)
 
-## Tests
-- Unit tests run with Maven:
-  - ./mvnw test
-  - Test class example: [src/test/java/sarba/movieApp/MovieAppApplicationTests.java](src/test/java/sarba/movieApp/MovieAppApplicationTests.java)
+1.  Ensure your `.env` file is created with the correct credentials.
+2.  Run the compose command:
+    ```bash
+    docker-compose up --build -d
+    ```
+    *This spins up the App, MySQL, and phpMyAdmin containers.*
 
-## Key implementation notes
-- File upload stores files under `project.fileLocation` and returns a generated filename (see [`sarba.movieApp.service.FileServiceImpl`](src/main/java/sarba/movieApp/service/FileServiceImpl.java)).
-- OTP email uses a cached template loader [`sarba.movieApp.utils.EmailTemplateUtils`](src/main/java/sarba/movieApp/utils/EmailTemplateUtils.java) and sends HTML via [`sarba.movieApp.service.EmailService`](src/main/java/sarba/movieApp/service/EmailService.java).
-- JWT generation/validation implemented in [`sarba.movieApp.auth.services.JwtService`](src/main/java/sarba/movieApp/auth/services/JwtService.java).
-- Global exception handling: [`sarba.movieApp.exceptions.GlobalExceptionHandler`](src/main/java/sarba/movieApp/exceptions/GlobalExceptionHandler.java).
+---
 
-## Files referenced
-- [Dockerfile](Dockerfile)  
-- [docker-compose.yml](docker-compose.yml)  
-- [.env](.env)  
-- [src/main/resources/templates/password-reset-otp-template.html](src/main/resources/templates/password-reset-otp-template.html)  
-- [src/main/resources/app.prop](src/main/resources/app.prop)
+## 📡 API Endpoints
 
-## License
+Base URL: `http://localhost:8080`
+
+### 🟢 Public / Auth
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/auth/register` | Register a new user |
+| `POST` | `/api/v1/auth/login` | Login and receive JWT |
+| `POST` | `/forgotPassword/verifyEmail` | Send OTP for password reset |
+| `POST` | `/forgotPassword/verifyOtp` | Verify received OTP |
+
+### 🔒 Protected (Requires JWT)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/movie/add` | Add a movie (Multipart: JSON + File) |
+| `GET` | `/api/v1/movie/{id}` | Get specific movie details |
+| `GET` | `/api/v1/movie/all` | Get all movies (Supports `?page=1&sortBy=name`) |
+| `GET` | `/api/v1/movie/pdf` | Download movie list as PDF |
+| `POST` | `/file/upload` | Upload a generic file |
+| `GET` | `/file/{fileName}` | Serve an uploaded file |
+
+---
+
+## 📄 License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
